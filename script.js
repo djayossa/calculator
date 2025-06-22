@@ -24,8 +24,14 @@ if (currentValue === "0" && !isNaN(value)){
 else if (currentValue === "0" && value === '.') {
     display.value = currentValue + value;
 
-}
-else {
+} else if (value === '.'){
+    //Get the last number in the display
+    let lastNumber = currentValue.split(/[+\-*/]/).pop();
+    // only add the decimal if the fcurrent number does not already have a decimal
+    if (!lastNumber.includes('.')){
+        display.value = currentValue + value;
+    }
+} else {
     display.value = currentValue + value;
 }
 
@@ -35,12 +41,17 @@ justCalculated = false;
 console.log('Display updated to:', display.value);
 }
 function clearDisplay() {
-    console.log('backspace button pressed.');
+    console.log('clear button pressed.');
+    display.value = '0';
+    justCalculated = false; // Reset the calculation flag
+    display.style.backgroundColor = '#f0f0f0'; // Reset background color
+    setTimeout(() => {
+        display.style.backgroundColor = ''; // Reset background color after 1 second
+    }, 150 );
 
-    alert('backspace button was clicked');
 }
 function deleteLast() {
-    console.log('backspace button pressed.');
+    console.log('Backspace button pressed.');
     let currentValue = display.value;
 
     //If there's only one character or it 0, reset to 0
@@ -50,7 +61,6 @@ function deleteLast() {
         // Remove the last character
         display.value = currentValue.slice(0, -1);
     }
-    alert('backspace button was clicked');
 }
 
 
@@ -59,7 +69,31 @@ function  calculate(){
 
     alert('equals button was clicked');
 }
+document.addEventListener('keydown', function(event) {
+    console.log('Key pressed:', event.key);
+    if (event.key >= '0' && event.key <= '9') {
+        appendToDisplay(event.key);
+    }else if (event.key === '.'){
+        appendToDisplay('.');
+    }else if (event.key === '+'){
+        appendToDisplay('+');
+    }else if (event.key === '-'){
+        appendToDisplay('-');
+    }else if (event.key === '*'){
+        appendToDisplay('*');
+    }else if (event.key === '/'){
+        event.preventDefault();
+        appendToDisplay('/');
+    }
 
+    else if (event.key === 'Enter' || event.key === '=') {
+        calculate();
+    }else if (event.key === 'Escape' || event.key === 'c' || event.key === 'c'){
+        clearDisplay();
+    } else if (event.key === 'Backspace' ){
+        deleteLast
+    }
+})
 document.addEventListener('DOMContentLoaded', function() {
     console.log('calculator loaded successfully');
     console.log('Display element', display );
